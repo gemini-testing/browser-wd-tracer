@@ -5,7 +5,7 @@ import { examplesMiddlewarePlugin } from './.config/vite-plugins/examples-middle
 
 export default defineConfig({
   plugins: [react(), examplesMiddlewarePlugin()],
-  base: process.env.VITE_BASE_PATH ?? '/',
+  base: process.env.VITE_BASE_PATH ?? './',
   root: './src/ui',
   build: {
     outDir: '../../dist',
