@@ -1,0 +1,17 @@
+export const CONSOLE_LEVEL_COLOR: Record<string, string> = {
+  log: 'default',
+  info: 'blue',
+  warn: 'orange',
+  warning: 'orange',
+  error: 'red',
+  debug: 'default',
+  assert: 'red',
+  table: 'cyan',
+  dir: 'purple',
+  group: 'geekblue',
+  groupCollapsed: 'geekblue',
+  groupEnd: 'geekblue',
+  count: 'cyan',
+  timeEnd: 'cyan',
+  trace: 'volcano',
+};
