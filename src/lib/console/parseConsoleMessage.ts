@@ -28,6 +28,10 @@ function argToString(arg: RemoteObject): string {
     return isString(arg.value) ? arg.value : JSON.stringify(arg.value);
   }
 
+  if (arg.description !== undefined) {
+    return arg.description;
+  }
+
   return `[${arg.type}]`;
 }
 

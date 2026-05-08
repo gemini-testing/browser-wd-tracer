@@ -39,3 +39,27 @@ export interface MessageSegment {
   text: string;
   style?: React.CSSProperties;
 }
+
+export interface ExceptionObject {
+  className?: string;
+  description?: string;
+  type: string;
+  subtype?: string;
+}
+
+export interface ExceptionDetails {
+  columnNumber: number;
+  exception?: ExceptionObject;
+  exceptionId: number;
+  executionContextId?: number;
+  lineNumber: number;
+  scriptId?: string;
+  stackTrace?: StackTrace;
+  text: string;
+  url?: string;
+}
+
+export interface ExceptionPayload {
+  exceptionDetails: ExceptionDetails;
+  timestamp: number;
+}

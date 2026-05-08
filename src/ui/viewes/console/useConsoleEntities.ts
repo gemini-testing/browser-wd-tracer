@@ -3,20 +3,54 @@ import { useSnapshot } from 'valtio';
 
 import { commonEntities, type EntityWithId } from '@/ui/observables/commonEntities';
 import { consoleFilters } from '@/ui/stores/console';
-import { isConsolePayload, extractConsoleMessage } from '@/lib/console';
+import {
+  isConsolePayload,
+  isExceptionPayload,
+  exceptionToConsolePayload,
+  extractConsoleMessage,
+  type ConsolePayload,
+} from '@/lib/console';
 
 const CONSOLE_API_EVENT = 'Runtime.consoleAPICalled';
+const EXCEPTION_THROWN_EVENT = 'Runtime.exceptionThrown';
 
-function isConsoleEntity(e: EntityWithId): boolean {
+function isConsoleApiEntity(e: EntityWithId): boolean {
   return e.metadata?.event === CONSOLE_API_EVENT && isConsolePayload(e.payload);
 }
 
-function getConsoleLevel(e: EntityWithId): string {
-  return isConsolePayload(e.payload) ? e.payload.type : '';
+function isExceptionEntity(e: EntityWithId): boolean {
+  return e.metadata?.event === EXCEPTION_THROWN_EVENT && isExceptionPayload(e.payload);
+}
+
+function getNormalizedPayload(e: EntityWithId): ConsolePayload | null {
+  if (isConsolePayload(e.payload)) {
+    return e.payload;
+  }
+
+  if (isExceptionPayload(e.payload)) {
+    return exceptionToConsolePayload(e.payload);
+  }
+
+  return null;
+}
+
+export interface NormalizedConsoleEntity {
+  entity: EntityWithId;
+  payload: ConsolePayload;
+}
+
+function toNormalized(e: EntityWithId): NormalizedConsoleEntity | null {
+  const payload = getNormalizedPayload(e);
+
+  if (!payload) {
+    return null;
+  }
+
+  return { entity: e, payload };
 }
 
 export interface ConsoleEntities {
-  filteredEntities: EntityWithId[];
+  filteredEntities: NormalizedConsoleEntity[];
   availableLevels: string[];
 }
 
@@ -25,25 +59,30 @@ export function useConsoleEntities(): ConsoleEntities {
   const snap = useSnapshot(consoleFilters);
 
   return useMemo(() => {
-    const allConsole = commonEntities.getItems().filter(isConsoleEntity);
-    const availableLevels = [...new Set(allConsole.map(getConsoleLevel))].sort();
+    const allItems = commonEntities.getItems();
+    const allConsole = allItems
+      .filter((e) => isConsoleApiEntity(e) || isExceptionEntity(e))
+      .flatMap((e) => {
+        const normalized = toNormalized(e);
+
+        return normalized ? [normalized] : [];
+      })
+      .sort((a, b) => a.payload.timestamp - b.payload.timestamp);
+
+    const availableLevels = [...new Set(allConsole.map((n) => n.payload.type))].sort();
 
     let result = allConsole;
 
     if (snap.levels.length > 0) {
       const levels = snap.levels as string[];
-      result = result.filter((e) => levels.includes(getConsoleLevel(e)));
+      result = result.filter((n) => levels.includes(n.payload.type));
     }
 
     if (snap.search.trim()) {
       const query = snap.search.toLowerCase();
-      result = result.filter((e) => {
-        if (!isConsolePayload(e.payload)) {
-          return false;
-        }
-
-        return extractConsoleMessage(e.payload.args).toLowerCase().includes(query);
-      });
+      result = result.filter((n) =>
+        extractConsoleMessage(n.payload.args).toLowerCase().includes(query),
+      );
     }
 
     return { filteredEntities: result, availableLevels };
