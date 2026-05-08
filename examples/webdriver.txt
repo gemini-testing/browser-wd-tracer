@@ -71351,6 +71351,50 @@
 2026-01-15T17:37:50+03:00 [1768498670.490][INFO]: [a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4] RESPONSE ExecuteScript 2026-01-15T17:37:50+03:00 {
 2026-01-15T17:37:50+03:00    "value": "complete"
 2026-01-15T17:37:50+03:00 }
+2026-01-15T17:37:50+03:00 [1768498670.800][DEBUG]: DevTools WebSocket Event: Runtime.exceptionThrown (session_id=612F83D82906371330EB8554EFE82149) 0123456789ABCDEF0123456789ABCDEF 2026-01-15T17:37:50+03:00 {
+2026-01-15T17:37:50+03:00    "exceptionDetails": {
+2026-01-15T17:37:50+03:00       "columnNumber": 750221,
+2026-01-15T17:37:50+03:00       "exception": {
+2026-01-15T17:37:50+03:00          "className": "ReferenceError",
+2026-01-15T17:37:50+03:00          "description": "ReferenceError: expect is not defined\n    at 96418 (https://example.com/static/js/8563.332d3409.js:1:750222)\n    at r (https://example.com/static/js/8563.332d3409.js:1:750300)",
+2026-01-15T17:37:50+03:00          "objectId": "-902336139148519460.1.8",
+2026-01-15T17:37:50+03:00          "subtype": "error",
+2026-01-15T17:37:50+03:00          "type": "object"
+2026-01-15T17:37:50+03:00       },
+2026-01-15T17:37:50+03:00       "exceptionId": 1,
+2026-01-15T17:37:50+03:00       "executionContextId": 1,
+2026-01-15T17:37:50+03:00       "lineNumber": 0,
+2026-01-15T17:37:50+03:00       "scriptId": "20",
+2026-01-15T17:37:50+03:00       "stackTrace": {
+2026-01-15T17:37:50+03:00          "callFrames": [
+2026-01-15T17:37:50+03:00             {
+2026-01-15T17:37:50+03:00                "columnNumber": 750221,
+2026-01-15T17:37:50+03:00                "functionName": "",
+2026-01-15T17:37:50+03:00                "lineNumber": 0,
+2026-01-15T17:37:50+03:00                "scriptId": "20",
+2026-01-15T17:37:50+03:00                "url": "https://example.com/static/js/8563.332d3409.js"
+2026-01-15T17:37:50+03:00             },
+2026-01-15T17:37:50+03:00             {
+2026-01-15T17:37:50+03:00                "columnNumber": 750299,
+2026-01-15T17:37:50+03:00                "functionName": "r",
+2026-01-15T17:37:50+03:00                "lineNumber": 0,
+2026-01-15T17:37:50+03:00                "scriptId": "20",
+2026-01-15T17:37:50+03:00                "url": "https://example.com/static/js/8563.332d3409.js"
+2026-01-15T17:37:50+03:00             },
+2026-01-15T17:37:50+03:00             {
+2026-01-15T17:37:50+03:00                "columnNumber": 12,
+2026-01-15T17:37:50+03:00                "functionName": "handleClick",
+2026-01-15T17:37:50+03:00                "lineNumber": 45,
+2026-01-15T17:37:50+03:00                "scriptId": "30",
+2026-01-15T17:37:50+03:00                "url": "https://example.com/static/js/app.chunk.789abc.js"
+2026-01-15T17:37:50+03:00             }
+2026-01-15T17:37:50+03:00          ]
+2026-01-15T17:37:50+03:00       },
+2026-01-15T17:37:50+03:00       "text": "Uncaught",
+2026-01-15T17:37:50+03:00       "url": "https://example.com/static/js/8563.332d3409.js"
+2026-01-15T17:37:50+03:00    },
+2026-01-15T17:37:50+03:00    "timestamp": 1778137688722.41
+2026-01-15T17:37:50+03:00 }
 2026-01-15T17:37:51+03:00 [72:185:0115/195419.000120:ERROR:bus.cc(399)] Failed to connect to the bus: No such file or directory
 2026-01-15T17:37:51+03:00 [1768498671.520][INFO]: [a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4] COMMAND Quit 2026-01-15T17:37:51+03:00 {}
 2026-01-15T17:37:52+03:00 [1768498672.490][DEBUG]: DevTools WebSocket Event: Inspector.detached (session_id=612F83D82906371330EB8554EFE82149) 0123456789ABCDEF0123456789ABCDEF 2026-01-15T17:37:52+03:00 {

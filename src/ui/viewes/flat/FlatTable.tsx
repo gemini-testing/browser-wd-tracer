@@ -13,6 +13,7 @@ import { isNonNullObject } from '@/lib/guards/isNonNullObject';
 import { useJsonViewerTheme } from '@/ui/hooks/useJsonViewerTheme';
 import { toggleArrayItem } from '@/lib/utils/toggleArrayItem';
 import { BaseTable } from '../../components/BaseTable';
+import { CopyJsonButton } from '../../components/CopyJsonButton';
 
 const useStyles = createStyles(() => ({
   time: {
@@ -25,6 +26,9 @@ const useStyles = createStyles(() => ({
   expandWrapper: {
     padding: '4px',
   },
+  messageCell: {
+    position: 'relative',
+  },
 }));
 
 interface FlatTableProps {
@@ -35,6 +39,7 @@ export function FlatTable({ entities }: FlatTableProps) {
   const { styles } = useStyles();
   const jsonTheme = useJsonViewerTheme();
   const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);
+  const [hoveredRowKey, setHoveredRowKey] = useState<React.Key | null>(null);
 
   const handleToggle = (key: React.Key) => {
     setExpandedRowKeys((prev) => toggleArrayItem(prev, key));
@@ -53,9 +58,33 @@ export function FlatTable({ entities }: FlatTableProps) {
     return <span className={styles.time}>{formatTime(ts)}</span>;
   };
 
-  const renderMessage = (_: unknown, entity: EntityWithId) => (
-    <span className={styles.message}>{extractMessage(entity)}</span>
-  );
+  const renderMessage = (_: unknown, entity: EntityWithId) => {
+    const payload = cleanJsonValue(entity.payload);
+    const metadata = cleanJsonValue(entity.metadata);
+    const payloadSrc = Array.isArray(payload) ? { items: payload } : payload;
+
+    const copyData: Record<string, unknown> = {};
+
+    if (isNonNullObject(payloadSrc)) {
+      copyData.payload = payloadSrc;
+    }
+
+    if (isNonNullObject(metadata)) {
+      copyData.metadata = metadata;
+    }
+
+    const hasCopyData = Object.keys(copyData).length > 0;
+
+    return (
+      <div className={styles.messageCell}>
+        <span className={styles.message}>{extractMessage(entity)}</span>
+        <CopyJsonButton
+          data={hasCopyData ? copyData : null}
+          visible={hoveredRowKey === entity._id}
+        />
+      </div>
+    );
+  };
 
   const renderExpanded = (entity: EntityWithId) => {
     const payload = cleanJsonValue(entity.payload);
@@ -105,6 +134,8 @@ export function FlatTable({ entities }: FlatTableProps) {
       }}
       onRow={(record) => ({
         onClick: () => handleToggle(record._id),
+        onMouseEnter: () => setHoveredRowKey(record._id),
+        onMouseLeave: () => setHoveredRowKey(null),
         style: { cursor: 'pointer' },
       })}
     />

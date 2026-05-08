@@ -86,4 +86,12 @@ describe('parseConsoleMessage', () => {
 
     expect(result).toEqual([{ text: 'hello', style: undefined }]);
   });
+
+  it('should use description as text for an object arg without value', () => {
+    const result = parseConsoleMessage([
+      { type: 'object', description: 'ReferenceError: expect is not defined' },
+    ]);
+
+    expect(result).toEqual([{ text: 'ReferenceError: expect is not defined' }]);
+  });
 });

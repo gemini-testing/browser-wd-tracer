@@ -16,6 +16,7 @@ import type { AnyPairedEntity } from '@/lib/entity/types';
 import { isNonNullObject } from '@/lib/guards/isNonNullObject';
 import { toggleArrayItem } from '@/lib/utils/toggleArrayItem';
 import { BaseTable } from '../../components/BaseTable';
+import { CopyJsonButton } from '../../components/CopyJsonButton';
 import { STATUS_COLOR } from './types';
 
 const useStyles = createStyles(() => ({
@@ -31,6 +32,9 @@ const useStyles = createStyles(() => ({
   },
   expandWrapper: {
     padding: '4px',
+  },
+  commandCell: {
+    position: 'relative',
   },
 }));
 
@@ -58,6 +62,7 @@ export function CommandsTable() {
   const jsonTheme = useJsonViewerTheme();
   const { styles } = useStyles();
   const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);
+  const [hoveredRowKey, setHoveredRowKey] = useState<React.Key | null>(null);
 
   const filteredPairs = useMemo(() => {
     let result: PairedEntityWithId[] = pairedEntities.getItems();
@@ -88,9 +93,48 @@ export function CommandsTable() {
     return <span className={styles.monospace}>{formatDurationMs(duration)}</span>;
   };
 
-  const renderCommand = (_: unknown, row: PairedEntityWithId) => (
-    <span className={styles.monospace}>{row.command}</span>
-  );
+  const renderCommand = (_: unknown, row: PairedEntityWithId) => {
+    const reqPayload = cleanJsonValue(row.request?.payload);
+    const resPayload = cleanJsonValue(row.response?.payload);
+    const reqMeta = cleanJsonValue(row.request?.metadata);
+    const resMeta = cleanJsonValue(row.response?.metadata);
+
+    const copyData: Record<string, unknown> = {};
+
+    if (isNonNullObject(reqPayload)) {
+      copyData.request = reqPayload;
+    }
+
+    if (isNonNullObject(resPayload)) {
+      copyData.response = resPayload;
+    }
+
+    const metaSrc: Record<string, unknown> = {};
+
+    if (reqMeta) {
+      metaSrc.request = reqMeta;
+    }
+
+    if (resMeta) {
+      metaSrc.response = resMeta;
+    }
+
+    if (Object.keys(metaSrc).length > 0) {
+      copyData.metadata = metaSrc;
+    }
+
+    const hasCopyData = Object.keys(copyData).length > 0;
+
+    return (
+      <div className={styles.commandCell}>
+        <span className={styles.monospace}>{row.command}</span>
+        <CopyJsonButton
+          data={hasCopyData ? copyData : null}
+          visible={hoveredRowKey === row._id}
+        />
+      </div>
+    );
+  };
 
   const renderExpanded = (row: PairedEntityWithId) => {
     const jsonProps = {
@@ -152,6 +196,8 @@ export function CommandsTable() {
       }}
       onRow={(record) => ({
         onClick: () => handleToggle(record._id),
+        onMouseEnter: () => setHoveredRowKey(record._id),
+        onMouseLeave: () => setHoveredRowKey(null),
         style: { cursor: 'pointer' },
       })}
     />

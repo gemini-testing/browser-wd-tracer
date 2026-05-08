@@ -1,6 +1,5 @@
 import { createStyles } from 'antd-style';
 
-import type { EntityWithId } from '@/ui/observables/commonEntities';
 import { ConsoleTable } from './ConsoleTable';
 import { useConsoleEntities } from './useConsoleEntities';
 
@@ -17,7 +16,7 @@ export function ConsoleView() {
 
   return (
     <div className={styles.wrapper}>
-      <ConsoleTable entities={filteredEntities as EntityWithId[]} />
+      <ConsoleTable entities={filteredEntities} />
     </div>
   );
 }

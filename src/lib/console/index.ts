@@ -4,6 +4,8 @@ export * from './extractConsoleMessage';
 export * from './formatStackTrace';
 export * from './remoteObjectToJson';
 export * from './isConsolePayload';
+export * from './isExceptionPayload';
+export * from './exceptionToConsolePayload';
 export * from './getObjectArgs';
 export * from './getLongStringArgs';
 export * from './hasExpandContent';
